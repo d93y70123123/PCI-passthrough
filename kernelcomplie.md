@@ -98,8 +98,8 @@ static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
 ```
 
 ```diff
-+++  static bool acs_on_downstream;
-+++  static bool acs_on_multifunction;
++  static bool acs_on_downstream;
++  static bool acs_on_multifunction;
 
 #define NUM_ACS_IDS 16
 struct acs_on_id {
