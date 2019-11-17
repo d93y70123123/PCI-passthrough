@@ -1,11 +1,11 @@
 # 核心編譯
-底下使用ELRepo網站提供的SRPM檔案進行核心編譯(以kernel-4.4.69核心版本為例)，整體流程如下:  
+底下使用ELRepo網站提供的SRPM檔案進行核心編譯(以kernel-5.3.11核心版本為例)，整體流程如下:  
 
-先到ELRepo網站下載SRPM 連結網址  
-透過 rpm 指令安裝下載的SRPM檔案  
-下載linux核心 連結網址  
-解壓縮linux核心，並修改核心 連結網址  
-最後使用SRPM重新包裝核心rpm檔案  
+1. 先到ELRepo網站下載SRPM 連結網址  
+2. 透過 rpm 指令安裝下載的SRPM檔案  
+3. 下載linux核心 連結網址  
+4. 解壓縮linux核心，並修改核心 連結網址  
+5. 最後使用SRPM重新包裝核心rpm檔案  
 
 
 ！！！！！(⊙ˍ⊙) ！！注意！！ (⊙ˍ⊙)！！！！！  
@@ -16,7 +16,7 @@
 
 
 ## 安裝步驟:  
-下載SRPM → wget http://elrepo.org/linux/kernel/el7/SRPMS/kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm  
+下載SRPM → wget https://elrepo.org/linux/kernel/el8/SRPMS/kernel-ml-5.3.11-1.el8.elrepo.nosrc.rpm  
 
 安裝SRPM → rpm -ivh kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
 ```bash
@@ -45,7 +45,7 @@ drwxr-xr-x. 4 root root    32  5月 25 02:27 rpmbuild
 ```
 
 
-下載核心 → wget https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.69.tar.xz
+下載核心 → wget http://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.3.11.tar.xz
 
 移動核心檔案至指定目錄 → mv linux-4.4.69.tar.xz rpmbuild/SOURCES
 
