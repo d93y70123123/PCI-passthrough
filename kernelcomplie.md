@@ -1,10 +1,10 @@
 # 核心編譯
 底下使用ELRepo網站提供的SRPM檔案進行核心編譯(以kernel-5.3.11核心版本為例)，整體流程如下:  
 
-1. 先到ELRepo網站下載SRPM 連結網址  
+1. 先到ELRepo網站下載SRPM [連結網址](https://elrepo.org/linux/kernel/el8/SRPMS/)  
 2. 透過 rpm 指令安裝下載的SRPM檔案  
-3. 下載linux核心 連結網址  
-4. 解壓縮linux核心，並修改核心 連結網址  
+3. 下載linux核心 [連結網址](http://cdn.kernel.org/pub/linux/kernel/v5.x/)  
+4. 解壓縮linux核心，並修改核心 [連結網址](https://lkml.org/lkml/2013/5/30/513)  
 5. 最後使用SRPM重新包裝核心rpm檔案  
 
 
