@@ -78,7 +78,7 @@ drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
 ```
 
 quirks.c
-```bash
+```diff
 static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
 {
         /*
@@ -95,113 +95,108 @@ static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
 
         return acs_flags ? 0 : 1;
 }
-```
 
-```diff
-+  static bool acs_on_downstream;
-+  static bool acs_on_multifunction;
++ static bool acs_on_downstream;
++ static bool acs_on_multifunction;
 
-#define NUM_ACS_IDS 16
-struct acs_on_id {
-	unsigned short vendor;
-	unsigned short device;
-};
-static struct acs_on_id acs_on_ids[NUM_ACS_IDS];
-static u8 max_acs_id;
++ #define NUM_ACS_IDS 16
++ struct acs_on_id {
++	unsigned short vendor;
++	unsigned short device;
++  };
++ static struct acs_on_id acs_on_ids[NUM_ACS_IDS];
++ static u8 max_acs_id;
 
-static __init int pcie_acs_override_setup(char *p)
-{
-	if (!p)
-		return -EINVAL;
++ static __init int pcie_acs_override_setup(char *p)
++ {
++ 	if (!p)
++ 		return -EINVAL;
++ 
++ 	while (*p) {
++ 		if (!strncmp(p, "downstream", 10))
++ 			acs_on_downstream = true;
++ 		if (!strncmp(p, "multifunction", 13))
++ 			acs_on_multifunction = true;
++ 		if (!strncmp(p, "id:", 3)) {
++ 			char opt[5];
++ 			int ret;
++ 			long val;
++ 
++ 			if (max_acs_id >= NUM_ACS_IDS - 1) {
++ 				pr_warn("Out of PCIe ACS override slots (%d)\n",
++ 					NUM_ACS_IDS);
++ 				goto next;
++ 			}
++ 
++ 			p += 3;
++ 			snprintf(opt, 5, "%s", p);
++ 			ret = kstrtol(opt, 16, &val);
++ 			if (ret) {
++ 				pr_warn("PCIe ACS ID parse error %d\n", ret);
++ 				goto next;
++ 			}
++ 			acs_on_ids[max_acs_id].vendor = val;
++ 
++ 			p += strcspn(p, ":");
++ 			if (*p != ':') {
++ 				pr_warn("PCIe ACS invalid ID\n");
++ 				goto next;
++ 			}
++ 
++ 			p++;
++ 			snprintf(opt, 5, "%s", p);
++ 			ret = kstrtol(opt, 16, &val);
++ 			if (ret) {
++ 				pr_warn("PCIe ACS ID parse error %d\n", ret);
++ 				goto next;
++ 			}
++ 			acs_on_ids[max_acs_id].device = val;
++ 			max_acs_id++;
++ 		}
++ next:
++ 		p += strcspn(p, ",");
++ 		if (*p == ',')
++ 			p++;
++ 	}
++ 
++ 	if (acs_on_downstream || acs_on_multifunction || max_acs_id)
++ 		pr_warn("Warning: PCIe ACS overrides enabled; This may allow non-IOMMU protected peer-to-peer DMA\n");
++ 
++ 	return 0;
++ }
++ early_param("pcie_acs_override", pcie_acs_override_setup);
++ 
++ static int pcie_acs_overrides(struct pci_dev *dev, u16 acs_flags)
++ {
++ 	int i;
++ 
++ 	/* Never override ACS for legacy devices or devices with ACS caps */
++ 	if (!pci_is_pcie(dev) ||
++ 	    pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS))
++ 		return -ENOTTY;
++ 
++ 	for (i = 0; i < max_acs_id; i++)
++ 		if (acs_on_ids[i].vendor == dev->vendor &&
++ 		    acs_on_ids[i].device == dev->device)
++ 			return 1;
++ 
++ 	switch (pci_pcie_type(dev)) {
++ 	case PCI_EXP_TYPE_DOWNSTREAM:
++ 	case PCI_EXP_TYPE_ROOT_PORT:
++ 		if (acs_on_downstream)
++ 			return 1;
++ 		break;
++ 	case PCI_EXP_TYPE_ENDPOINT:
++ 	case PCI_EXP_TYPE_UPSTREAM:
++ 	case PCI_EXP_TYPE_LEG_END:
++ 	case PCI_EXP_TYPE_RC_END:
++ 		if (acs_on_multifunction && dev->multifunction)
++ 			return 1;
++ 	}
++ 
++ 	return -ENOTTY;
++ }
 
-	while (*p) {
-		if (!strncmp(p, "downstream", 10))
-			acs_on_downstream = true;
-		if (!strncmp(p, "multifunction", 13))
-			acs_on_multifunction = true;
-		if (!strncmp(p, "id:", 3)) {
-			char opt[5];
-			int ret;
-			long val;
-
-			if (max_acs_id >= NUM_ACS_IDS - 1) {
-				pr_warn("Out of PCIe ACS override slots (%d)\n",
-					NUM_ACS_IDS);
-				goto next;
-			}
-
-			p += 3;
-			snprintf(opt, 5, "%s", p);
-			ret = kstrtol(opt, 16, &val);
-			if (ret) {
-				pr_warn("PCIe ACS ID parse error %d\n", ret);
-				goto next;
-			}
-			acs_on_ids[max_acs_id].vendor = val;
-
-			p += strcspn(p, ":");
-			if (*p != ':') {
-				pr_warn("PCIe ACS invalid ID\n");
-				goto next;
-			}
-
-			p++;
-			snprintf(opt, 5, "%s", p);
-			ret = kstrtol(opt, 16, &val);
-			if (ret) {
-				pr_warn("PCIe ACS ID parse error %d\n", ret);
-				goto next;
-			}
-			acs_on_ids[max_acs_id].device = val;
-			max_acs_id++;
-		}
-next:
-		p += strcspn(p, ",");
-		if (*p == ',')
-			p++;
-	}
-
-	if (acs_on_downstream || acs_on_multifunction || max_acs_id)
-		pr_warn("Warning: PCIe ACS overrides enabled; This may allow non-IOMMU protected peer-to-peer DMA\n");
-
-	return 0;
-}
-early_param("pcie_acs_override", pcie_acs_override_setup);
-
-static int pcie_acs_overrides(struct pci_dev *dev, u16 acs_flags)
-{
-	int i;
-
-	/* Never override ACS for legacy devices or devices with ACS caps */
-	if (!pci_is_pcie(dev) ||
-	    pci_find_ext_capability(dev, PCI_EXT_CAP_ID_ACS))
-		return -ENOTTY;
-
-	for (i = 0; i < max_acs_id; i++)
-		if (acs_on_ids[i].vendor == dev->vendor &&
-		    acs_on_ids[i].device == dev->device)
-			return 1;
-
-	switch (pci_pcie_type(dev)) {
-	case PCI_EXP_TYPE_DOWNSTREAM:
-	case PCI_EXP_TYPE_ROOT_PORT:
-		if (acs_on_downstream)
-			return 1;
-		break;
-	case PCI_EXP_TYPE_ENDPOINT:
-	case PCI_EXP_TYPE_UPSTREAM:
-	case PCI_EXP_TYPE_LEG_END:
-	case PCI_EXP_TYPE_RC_END:
-		if (acs_on_multifunction && dev->multifunction)
-			return 1;
-	}
-
-	return -ENOTTY;
-}
-```
-
-
-```diff
 static const struct pci_dev_acs_enabled {
         u16 vendor;
         u16 device;
@@ -275,7 +270,7 @@ static const struct pci_dev_acs_enabled {
 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_intel_pch_acs },
 	{ 0x19a2, 0x710, pci_quirk_mf_endpoint_acs }, /* Emulex BE3-R */
 	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
-	- { PCI_ANY_ID, PCI_ANY_ID, pcie_acs_overrides },
++ 	{ PCI_ANY_ID, PCI_ANY_ID, pcie_acs_overrides },
 	{ 0 }
 };
 ```
@@ -283,7 +278,7 @@ static const struct pci_dev_acs_enabled {
 修改完核心參數後,記得必須再打包成原來的壓縮檔！ ლ(・ω・ლ)  
 
 (σ･ω･)σ 先將原本的核心檔的壓所檔刪除  
-```
+```bash
 [root@localhost ~]# cd /root/rpmbuild/SOURCES/
 [root@localhost SOURCES]# ll
 總計 85520
@@ -305,7 +300,7 @@ drwxrwxr-x. 24 root root   4096  5月 20 20:27 linux-4.4.69
 
 
 (σ･ω･)σ 把編譯完成的核心資料夾進行壓縮動作
-```
+```bash
 [root@localhost SOURCES]# tar Jcvf linux-4.4.69.tar.xz linux-4.4.69
 linux-4.4.69/
 linux-4.4.69/.get_maintainer.ignore
@@ -353,14 +348,14 @@ drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
 
 
 config-4.4.69-x86_64
-```bash
+```diff
 CONFIG_UIO_MF624=m
 CONFIG_VFIO_IOMMU_TYPE1=m
 CONFIG_VFIO_VIRQFD=m
 CONFIG_VFIO=m
 CONFIG_VFIO_PCI=m
 # CONFIG_VFIO_PCI_VGA is not set
-CONFIG_VFIO_PCI_VGA=y
++ CONFIG_VFIO_PCI_VGA=y
 CONFIG_VFIO_PCI_MMAP=y
 CONFIG_VFIO_PCI_INTX=y
 CONFIG_IRQ_BYPASS_MANAGER=m
