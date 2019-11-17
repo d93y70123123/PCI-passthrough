@@ -201,7 +201,7 @@ static int pcie_acs_overrides(struct pci_dev *dev, u16 acs_flags)
 ```
 
 
-```bash
+```diff
 static const struct pci_dev_acs_enabled {
         u16 vendor;
         u16 device;
@@ -275,7 +275,7 @@ static const struct pci_dev_acs_enabled {
 	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_intel_pch_acs },
 	{ 0x19a2, 0x710, pci_quirk_mf_endpoint_acs }, /* Emulex BE3-R */
 	{ 0x10df, 0x720, pci_quirk_mf_endpoint_acs }, /* Emulex Skyhawk-R */
-	-{ PCI_ANY_ID, PCI_ANY_ID, pcie_acs_overrides },
+	- { PCI_ANY_ID, PCI_ANY_ID, pcie_acs_overrides },
 	{ 0 }
 };
 ```
