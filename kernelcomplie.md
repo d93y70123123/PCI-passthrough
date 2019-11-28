@@ -1,5 +1,5 @@
 # 核心編譯
-底下使用ELRepo網站提供的SRPM檔案進行核心編譯(以kernel-5.3.11核心版本為例)，整體流程如下:  
+底下使用ELRepo網站提供的SRPM檔案進行核心編譯(以kernel-5.4.0核心版本為例)，整體流程如下:  
 
 1. 先到ELRepo網站下載SRPM [連結網址](https://elrepo.org/linux/kernel/el8/SRPMS/)  
 2. 透過 rpm 指令安裝下載的SRPM檔案  
@@ -16,68 +16,100 @@
 
 
 ## 安裝步驟:  
-下載SRPM → wget https://elrepo.org/linux/kernel/el8/SRPMS/kernel-ml-5.3.11-1.el8.elrepo.nosrc.rpm  
+下載SRPM → wget https://elrepo.org/linux/kernel/el8/SRPMS/kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm  
 
 安裝SRPM → rpm -ivh kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
 ```bash
-[root@localhost ~]# ll
-總計 88
--rw-------. 1 root root  1366  8月  8  2015 anaconda-ks.cfg
--rw-rw-r--. 1 dic  dic  83143  5月 25 02:18 kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
-[root@localhost ~]# rpm -ivh kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
-警告：kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm: 表頭 V4 DSA/SHA1 Signature, key ID baadae52: NOKEY
+[root@KVM ~]# ll
+總計 106964
+-rw-------. 1 root root      1400 11月 28 17:04 anaconda-ks.cfg
+-rw-r--r--. 1 root root      1555 11月 28 17:07 initial-setup-ks.cfg
+-rw-r--r--. 1 root root     77616 11月 25 10:15 kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm
+[root@KVM ~]# rpm -ivh kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm
+警告：kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm: 表頭 V4 DSA/SHA1 Signature, key ID baadae52: NOKEY
 Updating / installing...
-   1:kernel-lt-4.4.69-1.el7.elrepo    ################################# [100%]
-警告：使用者 ajb 不存在 - 現使用 root 代替
-警告：群組 ajb 不存在 - 現使用 root 代替
-警告：使用者 ajb 不存在 - 現使用 root 代替
-警告：群組 ajb 不存在 - 現使用 root 代替
-警告：使用者 ajb 不存在 - 現使用 root 代替
-警告：群組 ajb 不存在 - 現使用 root 代替
-警告：使用者 ajb 不存在 - 現使用 root 代替
-警告：群組 ajb 不存在 - 現使用 root 代替
-[root@localhost ~]# ll
-總計 88
--rw-------. 1 root root  1366  8月  8  2015 anaconda-ks.cfg
--rw-rw-r--. 1 dic  dic  83143  5月 25 02:18 kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
-drwxr-xr-x. 4 root root    32  5月 25 02:27 rpmbuild
-[root@localhost ~]# 
+   1:kernel-ml-5.4.0-1.el8.elrepo     警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+################################# [100%]
+警告：user ajb does not exist - using root
+警告：group ajb does not exist - using root
+[root@KVM ~]# ll
+總計 84
+-rw-------. 1 root root  1400 11月 28 17:04 anaconda-ks.cfg
+-rw-r--r--. 1 root root  1555 11月 28 17:07 initial-setup-ks.cfg
+-rw-r--r--. 1 root root 77616 11月 25 10:15 kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm
+drwxr-xr-x. 4 root root    34 11月 28 17:32 rpmbuild
+[root@KVM ~]# 
 ```
 
 
-下載核心 → wget http://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.3.11.tar.xz
+下載核心 → wget http://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz  
 
 移動核心檔案至指定目錄 → mv linux-4.4.69.tar.xz rpmbuild/SOURCES
 
 解壓縮核心檔案 → tar Jxvf linux-4.4.69.tar.xz
 ```bash
-[root@localhost ~]# mv linux-4.4.69.tar.xz rpmbuild/SOURCES/
-[root@localhost ~]# cd rpmbuild/SOURCES/
-[root@localhost SOURCES]# ll
-總計 85516
--rw-rw-r--. 1 root root   168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--. 1 root root      150  5月 22 05:44 cpupower.config
--rw-rw-r--. 1 root root      294  5月 22 05:44 cpupower.service
--rw-rw-r--. 1 dic  dic  87384340  5月 25 02:18 linux-4.4.69.tar.xz
-[root@localhost SOURCES]# tar Jxf linux-4.4.69.tar.xz 
-[root@localhost SOURCES]# ll
-總計 85520
--rw-rw-r--.  1 root root   168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--.  1 root root      150  5月 22 05:44 cpupower.config
--rw-rw-r--.  1 root root      294  5月 22 05:44 cpupower.service
-drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
--rw-rw-r--.  1 dic  dic  87384340  5月 25 02:18 linux-4.4.69.tar.xz
-[root@localhost SOURCES]# 
+[root@KVM ~]# ll
+總計 106964
+-rw-------. 1 root root      1400 11月 28 17:04 anaconda-ks.cfg
+-rw-r--r--. 1 root root      1555 11月 28 17:07 initial-setup-ks.cfg
+-rw-r--r--. 1 root root     77616 11月 25 10:15 kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm
+-rw-r--r--. 1 root root 109441440 11月 25 05:32 linux-5.4.tar.xz
+drwxr-xr-x. 4 root root        34 11月 28 17:32 rpmbuild
+[root@KVM ~]# cp linux-5.4.tar.xz rpmbuild/SOURCES/
+[root@KVM ~]# cd rpmbuild/SOURCES/
+[root@KVM SOURCES]# ll
+總計 107096
+-rw-rw-r--. 1 root root    187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--. 1 root root       150 11月 24 19:38 cpupower.config
+-rw-rw-r--. 1 root root       294 11月 24 19:38 cpupower.service
+-rwxrwxr-x. 1 root root      3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x. 1 root root       561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x. 1 root root       652 11月 24 19:38 generate_bls_conf.sh
+-rw-r--r--. 1 root root 109441440 11月 28 17:36 linux-5.4.tar.xz
+-rwxrwxr-x. 1 root root      1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--. 1 root root      2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x. 1 root root      1484 11月 24 19:38 mod-extra.sh
+[root@KVM SOURCES]# tar -Jxf linux-5.4.tar.xz
+[root@KVM SOURCES]# ll
+總計 107100
+-rw-rw-r--.  1 root root    187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--.  1 root root       150 11月 24 19:38 cpupower.config
+-rw-rw-r--.  1 root root       294 11月 24 19:38 cpupower.service
+-rwxrwxr-x.  1 root root      3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x.  1 root root       561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x.  1 root root       652 11月 24 19:38 generate_bls_conf.sh
+drwxrwxr-x. 24 root root      4096 11月 24 19:32 linux-5.4
+-rw-r--r--.  1 root root 109441440 11月 28 17:36 linux-5.4.tar.xz
+-rwxrwxr-x.  1 root root      1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--.  1 root root      2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x.  1 root root      1484 11月 24 19:38 mod-extra.sh
+[root@KVM SOURCES]#
 ```
 
 
 (σ･ω･)σ 修改核心檔案quirks.c,大約在3910行與3984行兩部份新增橘色字體程式碼 :
 ```bash
-[root@localhost linux-4.4.69]# cd drivers/pci/
-[root@localhost pci]# vim quirks.c 
+[root@KVM SOURCES]# vim linux-5.4/drivers/pci/quirks.c
 ```
 
-quirks.c
+### quirks.c的內容
 ```diff
 static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
 {
@@ -275,79 +307,106 @@ static const struct pci_dev_acs_enabled {
 };
 ```
 
-修改完核心參數後,記得必須再打包成原來的壓縮檔！ ლ(・ω・ლ)  
+### 修改完核心參數後,記得必須再打包成原來的壓縮檔！ ლ(・ω・ლ)  
 
 (σ･ω･)σ 先將原本的核心檔的壓所檔刪除  
 ```bash
-[root@localhost ~]# cd /root/rpmbuild/SOURCES/
-[root@localhost SOURCES]# ll
-總計 85520
--rw-rw-r--.  1 root root   168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--.  1 root root      150  5月 22 05:44 cpupower.config
--rw-rw-r--.  1 root root      294  5月 22 05:44 cpupower.service
-drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
--rw-rw-r--.  1 dic  dic  87384340  5月 25 02:18 linux-4.4.69.tar.xz
-[root@localhost SOURCES]# rm linux-4.4.69.tar.xz 
-rm：是否移除普通檔案‘linux-4.4.69.tar.xz’? y
-[root@localhost SOURCES]# ll
-總計 180
--rw-rw-r--.  1 root root 168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--.  1 root root    150  5月 22 05:44 cpupower.config
--rw-rw-r--.  1 root root    294  5月 22 05:44 cpupower.service
-drwxrwxr-x. 24 root root   4096  5月 20 20:27 linux-4.4.69
-[root@localhost SOURCES]# 
+[root@KVM SOURCES]# ll
+總計 107100
+-rw-rw-r--.  1 root root    187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--.  1 root root       150 11月 24 19:38 cpupower.config
+-rw-rw-r--.  1 root root       294 11月 24 19:38 cpupower.service
+-rwxrwxr-x.  1 root root      3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x.  1 root root       561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x.  1 root root       652 11月 24 19:38 generate_bls_conf.sh
+drwxrwxr-x. 24 root root      4096 11月 24 19:32 linux-5.4
+-rw-r--r--.  1 root root 109441440 11月 28 17:36 linux-5.4.tar.xz
+-rwxrwxr-x.  1 root root      1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--.  1 root root      2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x.  1 root root      1484 11月 24 19:38 mod-extra.sh
+[root@KVM SOURCES]# rm linux-5.4.tar.xz
+rm：是否移除普通檔案'linux-5.4.tar.xz'? y
+[root@KVM SOURCES]# ll
+總計 220
+-rw-rw-r--.  1 root root 187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--.  1 root root    150 11月 24 19:38 cpupower.config
+-rw-rw-r--.  1 root root    294 11月 24 19:38 cpupower.service
+-rwxrwxr-x.  1 root root   3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x.  1 root root    561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x.  1 root root    652 11月 24 19:38 generate_bls_conf.sh
+drwxrwxr-x. 24 root root   4096 11月 24 19:32 linux-5.4
+-rwxrwxr-x.  1 root root   1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--.  1 root root   2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x.  1 root root   1484 11月 24 19:38 mod-extra.sh
 ```
 
 
 (σ･ω･)σ 把編譯完成的核心資料夾進行壓縮動作
 ```bash
-[root@localhost SOURCES]# tar Jcvf linux-4.4.69.tar.xz linux-4.4.69
-linux-4.4.69/
-linux-4.4.69/.get_maintainer.ignore
-linux-4.4.69/.gitignore
-linux-4.4.69/.mailmap
-linux-4.4.69/COPYING
-linux-4.4.69/CREDITS
-linux-4.4.69/Documentation/
-linux-4.4.69/Documentation/00-INDEX
-linux-4.4.69/Documentation/ABI/
-linux-4.4.69/Documentation/ABI/README
+[root@KVM SOURCES]# tar -Jcvf linux-5.4.tar.xz linux-5.4
+linux-5.4/
+linux-5.4/.clang-format
+linux-5.4/.cocciconfig
+linux-5.4/.get_maintainer.ignore
+linux-5.4/.gitattributes
+linux-5.4/.gitignore
+linux-5.4/.mailmap
+linux-5.4/COPYING
+linux-5.4/CREDITS
+linux-5.4/Documentation/
+linux-5.4/Documentation/.gitignore
+linux-5.4/Documentation/ABI/
+linux-5.4/Documentation/ABI/README
+....
 DoReMiSo
-ux-4.4.69/virt/kvm/irqchip.c
-linux-4.4.69/virt/kvm/kvm_main.c
-linux-4.4.69/virt/kvm/vfio.c
-linux-4.4.69/virt/kvm/vfio.h
-linux-4.4.69/virt/lib/
-linux-4.4.69/virt/lib/Kconfig
-linux-4.4.69/virt/lib/Makefile
-linux-4.4.69/virt/lib/irqbypass.c
-[root@localhost SOURCES]# ll
-總計 88132
--rw-rw-r--.  1 root root   168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--.  1 root root      150  5月 22 05:44 cpupower.config
--rw-rw-r--.  1 root root      294  5月 22 05:44 cpupower.service
-drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
--rw-r--r--.  1 root root 90060908  6月  1 00:45 linux-4.4.69.tar.xz
-[root@localhost SOURCES]# 
+....
+linux-5.4/virt/kvm/kvm_main.c
+linux-5.4/virt/kvm/vfio.c
+linux-5.4/virt/kvm/vfio.h
+linux-5.4/virt/lib/
+linux-5.4/virt/lib/Kconfig
+linux-5.4/virt/lib/Makefile
+linux-5.4/virt/lib/irqbypass.c
+[root@KVM SOURCES]# ll
+總計 110052
+-rw-rw-r--.  1 root root    187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--.  1 root root       150 11月 24 19:38 cpupower.config
+-rw-rw-r--.  1 root root       294 11月 24 19:38 cpupower.service
+-rwxrwxr-x.  1 root root      3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x.  1 root root       561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x.  1 root root       652 11月 24 19:38 generate_bls_conf.sh
+drwxrwxr-x. 24 root root      4096 11月 24 19:32 linux-5.4
+-rw-r--r--.  1 root root 112464048 11月 28 18:07 linux-5.4.tar.xz
+-rwxrwxr-x.  1 root root      1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--.  1 root root      2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x.  1 root root      1484 11月 24 19:38 mod-extra.sh
+[root@KVM SOURCES]# 
 ```
 
 
-啟用VFIO_PCI功能設定檔案 → config-4.4.69-x86_64
+### 啟用VFIO_PCI功能設定檔案 → config-4.4.69-x86_64
 
 (σ･ω･)σ 在打包成rpm檔案之前，開啟VGA支援VFIO功能，大約在5782行下面新增橘色字體程式碼:
 ```bash
-[root@localhost SOURCES]# ll
-總計 88128
--rw-rw-r--.  1 root root   168102  5月 22 05:44 config-4.4.69-x86_64
--rw-rw-r--.  1 root root      150  5月 22 05:44 cpupower.config
--rw-rw-r--.  1 root root      294  5月 22 05:44 cpupower.service
-drwxrwxr-x. 24 root root     4096  5月 20 20:27 linux-4.4.69
--rw-r--r--.  1 root root 90060908  6月  1 00:45 linux-4.4.69.tar.xz
-[root@localhost SOURCES]# vim config-4.4.69-x86_64
+[root@KVM SOURCES]# ll
+總計 110052
+-rw-rw-r--.  1 root root    187945 11月 25 09:20 config-5.4.0-x86_64
+-rw-rw-r--.  1 root root       150 11月 24 19:38 cpupower.config
+-rw-rw-r--.  1 root root       294 11月 24 19:38 cpupower.service
+-rwxrwxr-x.  1 root root      3962 11月 24 19:38 filter-modules.sh
+-rwxrwxr-x.  1 root root       561 11月 24 19:38 filter-x86_64.sh
+-rwxrwxr-x.  1 root root       652 11月 24 19:38 generate_bls_conf.sh
+drwxrwxr-x. 24 root root      4096 11月 24 19:32 linux-5.4
+-rw-r--r--.  1 root root 112464048 11月 28 18:07 linux-5.4.tar.xz
+-rwxrwxr-x.  1 root root      1386 11月 24 19:38 mod-extra-blacklist.sh
+-rw-rw-r--.  1 root root      2251 11月 24 19:38 mod-extra.list
+-rwxrwxr-x.  1 root root      1484 11月 24 19:38 mod-extra.sh
+[root@KVM SOURCES]# vim config-5.4.0-x86_64
 ```
 
 
-config-4.4.69-x86_64
+config-5.4.0-x86_64  
+約6054行  
 ```diff
 CONFIG_UIO_MF624=m
 CONFIG_VFIO_IOMMU_TYPE1=m
@@ -364,11 +423,11 @@ CONFIG_IRQ_BYPASS_MANAGER=m
 
 設定要打包的核心檔案壓縮檔 → kernel-lt-4.4.spec
 ```bash
-[root@localhost SOURCES]# cd ../SPECS/
-[root@localhost SPECS]# ll
-總計 56
--rw-rw-r--. 1 root root 56680  5月 22 05:44 kernel-lt-4.4.spec
-[root@localhost SPECS]# vim kernel-lt-4.4.spec
+[root@KVM SOURCES]# cd ../SPECS/
+[root@KVM SPECS]# ll
+總計 48
+-rw-rw-r--. 1 root root 46322 11月 24 19:38 kernel-ml-5.4.spec
+[root@KVM SPECS]# vim kernel-ml-5.4.spec
 ```
 
 
@@ -376,79 +435,80 @@ CONFIG_IRQ_BYPASS_MANAGER=m
 ```bash
 =====  原本程式碼 o(^-^)o  =====
 # Sources.
-Source0: https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{LKAver}.tar.xz
-#######################################
-#Source1: config-%{version}-i686
-#Source2: config-%{version}-i686-NONPAE
-#######################################
-
+Source0: https://www.kernel.org/pub/linux/kernel/v5.x/linux-%{LKAver}.tar.xz
+Source1: config-%{version}-x86_64
 
 =====  更改後程式碼 (o^∀^)  =====
 # Sources.
 Source0: linux-%{LKAver}.tar.xz
-#######################################
-#Source1: config-%{version}-i686
-#Source2: config-%{version}-i686-NONPAE
-#######################################
+Source1: config-%{version}-x86_64
 ```
 
 
-編譯打包成RPM → rpmbuild -bb 最後一個步驟,編譯剛剛更改的訂定值打包成一個RPM
+### 編譯打包成RPM → rpmbuild -bb 最後一個步驟,編譯剛剛更改的訂定值打包成一個RPM  
+#### 安裝rpmbuild  
 ```bash
-[root@localhost SPECS]# ll
-總計 56
--rw-rw-r--. 1 root root 56635  6月  1 02:07 kernel-lt-4.4.spec
-[root@localhost SPECS]# rpmbuild -bb kernel-lt-4.4.spec
+[root@KVM SPECS]# dnf -y install rpm-build 
+```
+
+```bash
+[root@KVM SPECS]# ll
+總計 48
+-rw-rw-r--. 1 root root 46277 11月 28 18:14 kernel-ml-5.4.spec
+[root@KVM SPECS]# rpmbuild -bb kernel-ml-5.4.spec
 錯誤：相依性建置失敗：
-	asciidoc 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	gcc >= 3.4.2 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	m4 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	openssl-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	xmlto 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	audit-libs-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	binutils-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	bison 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	elfutils-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	java-1.8.0-openjdk-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	libunwind-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	newt-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	numactl-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	perl(ExtUtils::Embed) 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	python-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	slang-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	xz-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	zlib-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	ncurses-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
-	pciutils-devel 被 kernel-lt-4.4.69-1.el7.centos.x86_64 需要
+        asciidoc 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        audit-libs-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        binutils-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        bison 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        elfutils-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        flex 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        gcc 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        git 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        java-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        libcap-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        m4 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        make 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        ncurses-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        newt-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        numactl-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        openssl-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        pciutils-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        perl(ExtUtils::Embed) 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        perl-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        perl-generators 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        python3-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        python3-docutils 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        xmlto 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        xz-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+        zlib-devel 被 kernel-ml-5.4.0-1.el8.x86_64 需要
+[root@KVM SPECS]#
   ```
 
 
-進行編譯如果發生相依性建置失敗時,依據前面軟體名稱一一透過YUM指令安裝
+### 進行編譯如果發生相依性建置失敗時,依據前面軟體名稱一一透過YUM指令安裝
 ```bash
-root@localhost SPECS]# yum install -y asciidoc gcc m4 openssl-devel xmlto audit-libs-devel binutils-devel bison elfutils-devel java-1.8.0-openjdk-devel libunwind-devel newt-devel numactl-devel \
-python-devel perl-ExtUtils-Embed slang-devel xz-devel zlib-devel ncurses-devel pciutils-devel
+[root@KVM SPECS]# dnf -y install asciidoc audit-libs-devel binutils-devel bison elfutils-devel flex gcc git java-devel libcap-devel m4 make ncurses-devel newt-devel numactl-devel openssl-devel pciutils-devel perl-ExtUtils-Embed perl-devel perl-generators python3-devel python3-docutils xmlto xz-devel zlib-devel
 ```
 
-
-安裝rpmbuild
-```bash
-[root@localhost SPECS]# yum install rpm-build -y
-```
 
 
 (σ･ω･)σ 開始打包動作
 ```bash
-[root@localhost SPECS]# rpmbuild -bb kernel-lt-4.4.spec
+[root@KVM SPECS]# rpmbuild -bb kernel-ml-5.4.spec
 =====  進行打包時需要一些時間才會完成 o(^-^)o  =====
+正在執行(%prep)：/bin/sh -e /var/tmp/rpm-tmp.IkpKqr
 + umask 022
 + cd /root/rpmbuild/BUILD
 + cd /root/rpmbuild/BUILD
-+ rm -rf kernel-lt-4.4.69
-+ /usr/bin/mkdir -p kernel-lt-4.4.69
-+ cd kernel-lt-4.4.69
-+ /usr/bin/xz -dc /root/rpmbuild/SOURCES/linux-4.4.69.tar.xz
-+ /usr/bin/tar -xf -
++ rm -rf kernel-ml-5.4.0
++ /usr/bin/mkdir -p kernel-ml-5.4.0
++ cd kernel-ml-5.4.0
++ /usr/bin/xz -dc /root/rpmbuild/SOURCES/linux-5.4.tar.xz
++ /usr/bin/tar -xof -
+...
 DoReMiSo
+...
 + cp -pr linux-4.4.69-1.el7.centos.x86_64/tools/perf/Documentation/examples.txt /root/rpmbuild/BUILDROOT/kernel-lt-4.4.69-1.el7.centos.x86_64/usr/share/doc/perf-4.4.69
 + exit 0
 + umask 022
