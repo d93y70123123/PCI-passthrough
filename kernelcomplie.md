@@ -10,15 +10,15 @@
 
 ！！！！！(⊙ˍ⊙) ！！注意！！ (⊙ˍ⊙)！！！！！  
 
-下載/編譯 的核心檔案（linux-4.4.69.tar.xz）一定要放在SRPM解壓縮後再ROOT家目錄底下rpmbuild/SOURCES資料夾才行!  
+下載/編譯 的核心檔案（linux-5.4.0.tar.xz）一定要放在SRPM解壓縮後再ROOT家目錄底下rpmbuild/SOURCES資料夾才行!  
 修改完核心參數後，打包成原來的壓縮檔前，最好刪除原本的壓縮檔比較好!  
-如果是CentOS 7.2的版本以上，需要額外安裝打包指令 yum install rpm-build  
+如果是CentOS 7.2的版本以上，需要額外安裝打包指令 dnf install rpm-build  
 
 
 ## 安裝步驟:  
 下載SRPM → wget https://elrepo.org/linux/kernel/el8/SRPMS/kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm  
 
-安裝SRPM → rpm -ivh kernel-lt-4.4.69-1.el7.elrepo.nosrc.rpm
+安裝SRPM → rpm -ivh kernel-ml-5.4.0-1.el8.elrepo.nosrc.rpm
 ```bash
 [root@KVM ~]# ll
 總計 106964
@@ -61,9 +61,9 @@ drwxr-xr-x. 4 root root    34 11月 28 17:32 rpmbuild
 
 下載核心 → wget http://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz  
 
-移動核心檔案至指定目錄 → mv linux-4.4.69.tar.xz rpmbuild/SOURCES
+移動核心檔案至指定目錄 → cp linux-5.4.tar.xz rpmbuild/SOURCES/  
 
-解壓縮核心檔案 → tar Jxvf linux-4.4.69.tar.xz
+解壓縮核心檔案 → tar -Jxf linux-5.4.tar.xz  
 ```bash
 [root@KVM ~]# ll
 總計 106964
@@ -384,7 +384,7 @@ drwxrwxr-x. 24 root root      4096 11月 24 19:32 linux-5.4
 ```
 
 
-### 啟用VFIO_PCI功能設定檔案 → config-4.4.69-x86_64
+### 啟用VFIO_PCI功能設定檔案 → config-5.4.0-x86_64  
 
 (σ･ω･)σ 在打包成rpm檔案之前，開啟VGA支援VFIO功能，大約在5782行下面新增橘色字體程式碼:
 ```bash
@@ -421,7 +421,7 @@ CONFIG_IRQ_BYPASS_MANAGER=m
 ```
 
 
-設定要打包的核心檔案壓縮檔 → kernel-lt-4.4.spec
+設定要打包的核心檔案壓縮檔 → kernel-ml-5.4.spec
 ```bash
 [root@KVM SOURCES]# cd ../SPECS/
 [root@KVM SPECS]# ll
@@ -437,11 +437,15 @@ CONFIG_IRQ_BYPASS_MANAGER=m
 # Sources.
 Source0: https://www.kernel.org/pub/linux/kernel/v5.x/linux-%{LKAver}.tar.xz
 Source1: config-%{version}-x86_64
+...
+..
 
 =====  更改後程式碼 (o^∀^)  =====
 # Sources.
 Source0: linux-%{LKAver}.tar.xz
 Source1: config-%{version}-x86_64
+...
+..
 ```
 
 
@@ -493,7 +497,7 @@ Source1: config-%{version}-x86_64
 
 
 
-(σ･ω･)σ 開始打包動作
+### (σ･ω･)σ 開始打包動作
 ```bash
 [root@KVM SPECS]# rpmbuild -bb kernel-ml-5.4.spec
 =====  進行打包時需要一些時間才會完成 o(^-^)o  =====
@@ -509,64 +513,127 @@ Source1: config-%{version}-x86_64
 ...
 DoReMiSo
 ...
-+ cp -pr linux-4.4.69-1.el7.centos.x86_64/tools/perf/Documentation/examples.txt /root/rpmbuild/BUILDROOT/kernel-lt-4.4.69-1.el7.centos.x86_64/usr/share/doc/perf-4.4.69
-+ exit 0
+已寫入：/root/rpmbuild/RPMS/x86_64/kernel-ml-modules-extra-5.4.0-1.el8.x86_64.rpm
+正在執行(%clean)：/bin/sh -e /var/tmp/rpm-tmp.RujWJU
 + umask 022
 + cd /root/rpmbuild/BUILD
-+ cd kernel-lt-4.4.69
-+ /usr/bin/rm -rf /root/rpmbuild/BUILDROOT/kernel-lt-4.4.69-1.el7.centos.x86_64
++ cd kernel-ml-5.4.0
++ /usr/bin/rm -rf /root/rpmbuild/BUILDROOT/kernel-ml-5.4.0-1.el8.x86_64
 + exit 0
 
-root@localhost SPECS]# cd ..
-[root@localhost rpmbuild]# ll
+
+[root@KVM SPECS]# cd ..
 =====  編譯打包後會多出很多資料夾，當然包括我們需要的RPM檔案~ o(^-^)o  =====
+[root@KVM rpmbuild]# ll
 總計 0
-drwxr-xr-x. 3 root root  29  6月 12 18:57 BUILD
-drwxr-xr-x. 2 root root   6  6月 12 19:17 BUILDROOT
-drwxr-xr-x. 3 root root  19  6月 12 19:16 RPMS
-drwxr-xr-x. 2 root root 104  6月  8 23:11 SOURCES
-drwxr-xr-x. 2 root root  31  6月 12 19:17 SPECS
-drwxr-xr-x. 2 root root   6  6月  8 23:31 SRPMS
-[root@localhost rpmbuild]# cd RPMS
-[root@localhost RPMS]# ll
+drwxr-xr-x. 3 root root  29 11月 29 03:57 BUILD
+drwxr-xr-x. 2 root root   6 11月 29 05:34 BUILDROOT
+drwxr-xr-x. 3 root root  20 11月 29 05:34 RPMS
+drwxr-xr-x. 3 root root 270 11月 29 03:47 SOURCES
+drwxr-xr-x. 2 root root  32 11月 29 03:48 SPECS
+drwxr-xr-x. 2 root root   6 11月 29 03:57 SRPMS
+[root@KVM rpmbuild]# cd RPMS/
+[root@KVM RPMS]# ll
 總計 4
-drwxr-xr-x. 2 root root 4096  6月 12 19:17 x86_64
-[root@localhost RPMS]# cd x86_64
-[root@localhost x86_64]# ll
+drwxr-xr-x. 2 root root 4096 11月 29 05:34 x86_64
+[root@KVM RPMS]# cd x86_64/
 =====  黃色的rpm就是剛編譯好，具有VFIO功能核心檔案 o(^-^)o  =====
-總計 52148
--rw-r--r--. 1 root root 39790928  6月 12 19:16 kernel-lt-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root 10599620  6月 12 19:17 kernel-lt-devel-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root  1014944  6月 12 19:17 kernel-lt-headers-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root   124536  6月 12 19:17 kernel-lt-tools-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root    43680  6月 12 19:17 kernel-lt-tools-libs-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root    30600  6月 12 19:17 kernel-lt-tools-libs-devel-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root  1340652  6月 12 19:17 perf-4.4.69-1.el7.centos.x86_64.rpm
--rw-r--r--. 1 root root   438764  6月 12 19:17 python-perf-4.4.69-1.el7.centos.x86_64.rpm
+[root@KVM x86_64]# ll
+總計 72308
+-rw-r--r--. 1 root root  1053164 11月 29 05:34 bpftool-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root    13944 11月 29 05:34 kernel-ml-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root 27945620 11月 29 05:34 kernel-ml-core-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root 13232872 11月 29 05:34 kernel-ml-devel-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root  1312860 11月 29 05:34 kernel-ml-headers-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root 22082992 11月 29 05:34 kernel-ml-modules-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root   811648 11月 29 05:34 kernel-ml-modules-extra-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root   199552 11月 29 05:34 kernel-ml-tools-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root    45412 11月 29 05:34 kernel-ml-tools-libs-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root    16716 11月 29 05:34 kernel-ml-tools-libs-devel-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root  6659440 11月 29 05:34 perf-5.4.0-1.el8.x86_64.rpm
+-rw-r--r--. 1 root root   642104 11月 29 05:34 python3-perf-5.4.0-1.el8.x86_64.rpm
+[root@KVM x86_64]#
 ```
 
 
 
-(σ･ω･)σ 開始安裝新核心，記得安裝完需要重新開機，且選擇新的核心開機才對~
-```
-[root@localhost x86_64]# yum install kernel-lt-4.4.69-1.el7.centos.x86_64.rpm 
-
-================================================================================================================
- Package          Arch          Version                      Repository                                    Size
-================================================================================================================
+(σ･ω･)σ 開始安裝新核心，記得安裝完需要重新開機，且選擇新的核心開機才對~  
+現在要安裝kernel會比舊版的核心安裝還要多裝兩個rpm，不過別擔心，編譯完後也都一起編好了，而且系統也會提醒需要裝哪些。
+```bash
+[root@KVM x86_64]# dnf install kernel-ml-5.4.0-1.el8.x86_64.rpm
+上次中介資料過期檢查：1:59:26 以前，時間點為 西元2019年11月29日 (週五) 06時34分58秒。
+錯誤：
+ 問題: conflicting requests
+  - nothing provides kernel-ml-core-uname-r = 5.4.0-1.el8.x86_64 needed by kernel-ml-5.4.0-1.el8.x86_64
+  - nothing provides kernel-ml-modules-uname-r = 5.4.0-1.el8.x86_64 needed by kernel-ml-5.4.0-1.el8.x86_64
+(try to add '--skip-broken' to skip uninstallable packages or '--nobest' to use not only best candidate packages)
+[root@KVM x86_64]# dnf -y install kernel-ml-core-5.4.0-1.el8.x86_64.rpm kernel-ml-modules-5.4.0-1.el8.x86_64.rpm
+==========================================================================================
+ 軟體包                                  架構                         版本
+=================================================================================
 Installing:
- kernel-lt        x86_64        4.4.69-1.el7.centos          /kernel-lt-4.4.69-1.el7.centos.x86_64        171 M
+ kernel-ml-core                          x86_64                       5.4.0-1.el8
+ kernel-ml-modules                       x86_64                       5.4.0-1.el8
 
-Transaction Summary
-================================================================================================================
-Install  1 Package
+處理事項摘要
+=================================================================================
+安裝  2 軟體包
 
-Total size: 171 M
-Installed size: 171 M
-Is this ok [y/d/N]: 
+總大小：48 M
+安裝的大小：82 M
+下載軟體包：
+執行處理事項檢查
+處理事項檢查成功。
+執行處理事項測試
+處理事項測試成功。
+執行處理事項
+  準備        :
+  Installing  : kernel-ml-core-5.4.0-1.el8.x86_64
+  執行指令小稿: kernel-ml-core-5.4.0-1.el8.x86_64
+  Installing  : kernel-ml-modules-5.4.0-1.el8.x86_64
+  執行指令小稿: kernel-ml-modules-5.4.0-1.el8.x86_64
+  執行指令小稿: kernel-ml-core-5.4.0-1.el8.x86_64
+  執行指令小稿: kernel-ml-modules-5.4.0-1.el8.x86_64
+  核驗        : kernel-ml-core-5.4.0-1.el8.x86_64
+  核驗        : kernel-ml-modules-5.4.0-1.el8.x86_64
+
+已安裝:
+  kernel-ml-core-5.4.0-1.el8.x86_64                                      kernel-m
+
+完成！
+#####裝完上面兩個軟體就可以接著安裝核心了#####
+[root@KVM x86_64]# dnf install kernel-ml-5.4.0-1.el8.x86_64.rpm                           上次中介資料過期檢查：0:01:24 以前，時間點為 西元2019年11月29日 (週五) 08時38分07秒。
+依賴關係解析完畢。
+==========================================================================================
+ 軟體包              架構             版本                   軟體庫                  大小
+==========================================================================================
+Installing:
+ kernel-ml           x86_64           5.4.0-1.el8            @commandline            14 k
+
+處理事項摘要
+==========================================================================================
+安裝  1 軟體包
+
+總大小：14 k
+安裝的大小：0
+這樣可以嗎 [y/N]： y
+下載軟體包：
+執行處理事項檢查
+處理事項檢查成功。
+執行處理事項測試
+處理事項測試成功。
+執行處理事項
+  準備        :                                                                       1/1
+  Installing  : kernel-ml-5.4.0-1.el8.x86_64                                          1/1
+  核驗        : kernel-ml-5.4.0-1.el8.x86_64                                          1/1
+
+已安裝:
+  kernel-ml-5.4.0-1.el8.x86_64
+
+完成！
 ```
 
 
-(σ･ω･)σ 重新開機時在開機選單裡面出現4.4.69版本的核心，選擇第一個進入
+(σ･ω･)σ 重新開機時在開機選單裡面出現5.4.0版本的核心，選擇第一個進入
 
 開機選單
