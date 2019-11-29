@@ -28,6 +28,19 @@ KDUMP關閉
   * D槽：500G(儲存碟)  
 ```
 
+# 系統安裝流程
+![開始安裝系統](https://github.com/d93y70123123/PCI-passthrough/blob/master/1.%E9%81%B8%E5%8F%96%E5%AE%89%E8%A3%9D.PNG)  
+![選語系](https://github.com/d93y70123123/PCI-passthrough/blob/master/2.%E9%81%B8%E8%AA%9E%E7%B3%BB.PNG)  
+![選擇GUI](https://github.com/d93y70123123/PCI-passthrough/blob/master/3.%E9%81%B8%E6%93%87GUI%E7%92%B0%E5%A2%83.PNG)  
+![關閉KDUMP](https://github.com/d93y70123123/PCI-passthrough/blob/master/4.kdump%E9%97%9C%E9%96%89.PNG)  
+![選擇安裝目的地](https://github.com/d93y70123123/PCI-passthrough/blob/master/5.%E9%81%B8%E6%93%87%E5%AE%89%E8%A3%9D%E7%9B%AE%E7%9A%84%E5%9C%B0.PNG)  
+![選擇自訂](https://github.com/d93y70123123/PCI-passthrough/blob/master/6.%E9%81%B8%E6%93%87%E8%87%AA%E8%A8%82.PNG)  
+![選擇標準分割](https://github.com/d93y70123123/PCI-passthrough/blob/master/7.%E9%81%B8%E6%93%87%E6%A8%99%E6%BA%96%E5%88%86%E5%89%B2.PNG)  
+![分割容量](https://github.com/d93y70123123/PCI-passthrough/blob/master/8.%E5%88%86%E5%89%B2%E5%AE%B9%E9%87%8F.PNG)  
+![可以安裝了](https://github.com/d93y70123123/PCI-passthrough/blob/master/9.%E9%96%8B%E5%A7%8B%E5%AE%89%E8%A3%9D.PNG)  
+![設定帳密](https://github.com/d93y70123123/PCI-passthrough/blob/master/10.%E8%A8%AD%E5%AE%9A%E5%B8%B3%E8%99%9F%E5%AF%86%E7%A2%BC.PNG)  
+
+
 # 全系統更新
 ```bash
 dnf -y update
