@@ -30,3 +30,25 @@ have 5 step
 9. you can create VM now~
 10. install your Windows OS
 
+## install WINDOWS10
+1. press imdiently install
+2. select professional ver
+3. change (CD/DVD) to install driver
+```bash
+[root@KVM ~]# virsh attach-disk windows10 /vm_data/iso/virtio-win.iso sdb --targetbus sata --type cdrom --mode readonly
+Disk attached successfully
+
+```
+press load driver then view   
+chosse [virtio-win]  
+then chosse amd64 >> w10 >> ok >> next
+
+change CD/DVD again  
+press refresh  
+press add then all space for VM  
+chosse type [MAIN] to install  
+
+4. Install complete~~
+
+
+
