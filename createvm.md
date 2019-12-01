@@ -1,7 +1,109 @@
 # 建置虛擬機
 
-## create network interface  
-bridge or dhcp  
+## 新增bridge網卡  
+```bash
+查看網路：
+nmcli connection show
+
+刪除所有網路：
+nmcli connection delete 網路(device)
+
+nmcli connection add type bridge autoconnect yes con-name br0 ifname br0 
+nmcli connection modify br0 ipv4.method manual
+nmcli connection modify br0 ipv4.addresses 120.114.140.XX/26
+nmcli connection modify br0 ipv4.gateway 120.114.140.XX
+nmcli connection modify br0 ipv4.dns 120.114.100.1
+nmcli connection add type bridge-slave autoconnect yes con-name eno1 ifname eno1 master br0
+
+重新開啟網路：
+nmcli connection up eno1
+nmcli connection up br0
+```
+
+## 軟體安裝  
+### 首先是全系統安裝  
+dnf update -y  
+### 安裝虛擬機需要的軟體  
+dnf -y install qemu-kvm qemu-img virt-manager libvirt virt-install virt-viewer  
+### 安裝虛擬機用的UEFI  
+先新增repo  
+```bash
+[root@KVM yum.repos.d]# vim /etc/yum.repos.d/qemu-ovmf.repo
+[qemu-ovmf]
+name=firmware for qemu, built by jenkins, fresh from git repos
+baseurl=https://www.kraxel.org/repos/jenkins/
+metadata_expire=5m
+enabled=1
+gpgcheck=0
+```
+安裝OVMF  
+```bash
+[root@KVM yum.repos.d]# dnf install edk2.git-ovmf-x64
+上次中介資料過期檢查：0:00:12 以前，時間點為 西元2019年12月01日 (週日) 23時56分29秒。
+Package edk2.git-ovmf-x64-0-20190704.1266.g5be5439a5a.noarch is already installed.
+依賴關係解析完畢。
+...
+總下載大小：7.4 M
+這樣可以嗎 [y/N]：
+```
+
+## 如何使用NVIDIA的顯示卡  
+在<features>...</features>中加入一段不會被發現是虛擬機的參數  
+```bash
+<features>
+    ...
+    ...
+    <kvm>
+        <hidden state='on'/>
+     </kvm>
+</features>
+```
+
+## 更改grub檔案  
+在/etc/default/grub CMDLINE加入 pcie_acs_override=downstream rd.driver.pre=vfio-pci intel_iommu=on pci-stub.ids=顯卡ID
+```bash
+[root@KVM yum.repos.d]# vim /etc/default/grub
+...
+GRUB_CMDLINE_LINUX="resume=UUID=d6b21ada-5882-428c-aa87-2093475d0015 rhgb quiet pcie_acs_override=downstream rd.driver.pre=vfio-pci intel_iommu=on pci-stub.ids=1002:aab0,1002:6610"
+...
+```
+載入核心參數
+```bash
+[root@KVM yum.repos.d]# grub2-mkconfig -o /boot/grub2/grub.cfg
+Generating grub configuration file ...
+done
+[root@KVM yum.repos.d]#
+```
+cat /proc/cmdline 查看CMDLINE核心參數已被載入 ※重新開機才會看到新載入的參數
+
+## 編輯qemu.conf
+編輯 → /etc/libvirt/qemu.conf
+把【註解#】拿掉(user = "root" 跟 group = "root" )
+在『"cgroup_device_acl=[]"』之間註解都拿掉，並在其之間內容最後一個變數新增一個「 , 」如:『"/dev/hpet,"』後
+新增 →
+```bash
+"/dev/vfio/1", "/dev/vfio/2",
+"/dev/vfio/3", "/dev/vfio/4",
+"/dev/vfio/5", "/dev/vfio/6",
+"/dev/vfio/7", "/dev/vfio/8",
+"/dev/vfio/9", "/dev/vfio/10",
+"/dev/vfio/11", "/dev/vfio/12",
+"/dev/vfio/13", "/dev/vfio/14",
+"/dev/vfio/15", "/dev/vfio/16",
+"/dev/vfio/17", "/dev/vfio/18",
+"/dev/vfio/19", "/dev/vfio/20"
+
+把【註解#】拿掉
+接著改成 clear_emulator_capabilities = 0
+最後一行加入 ：
+nvram = [
+    "/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd:/usr/share/edk2.git/ovmf-x64/OVMF_VARS-pure-efi.fd",
+    "/usr/share/edk2.git/aarch64/QEMU_EFI-pflash.raw:/usr/share/edk2.git/aarch64/vars-template-pflash.raw",
+]
+```
+重新啟動 → systemctl restart libvirtd.service
+
+檢查第一張PCI or PCIe是否與kernel分離 → ls -li /sys/kernel/iommu_groups/*/*/* ※重新開機才會看到PCI or PCIe分離的樣子
 
 ## 開啟虛擬機管理員  
 ![vmaneger](http://120.114.142.50/img/1.%e9%96%8b%e5%95%9fVM%e7%ae%a1%e7%90%86%e5%93%a1.png)
