@@ -636,5 +636,11 @@ Installing:
 
 (σ･ω･)σ 重新開機時在開機選單裡面出現5.4.0版本的核心，選擇第一個進入  
 
-開機選單  
-![開機選單](https://github.com/d93y70123123/PCI-passthrough/blob/master/%E9%81%B8%E6%A0%B8%E5%BF%83%E9%96%8B%E6%A9%9F.PNG)
+### 開機選單  
+![開機選單](https://github.com/d93y70123123/PCI-passthrough/blob/master/%E9%81%B8%E6%A0%B8%E5%BF%83%E9%96%8B%E6%A9%9F.PNG)  
+
+確認有選到正確的核心  
+```bash
+[root@KVM x86_64]# uname -r
+5.4.0-1.el8.x86_64
+```
