@@ -48,7 +48,7 @@ Formatting 'windows10-storage.img', fmt=qcow2 size=429496729600 cluster_size=655
 這邊設置在 [D] ，若這時磁碟代號已經被使用的話，可以透過更換其磁區代號來解決  
 ![adddisk](http://120.114.142.50/img2/10.disk6.png)  
 下一步  
-!(adddisk)[http://120.114.142.50/img2/11.disk7.png]
+![adddisk](http://120.114.142.50/img2/11.disk7.png)
 **更換磁碟代號**  
 將CD的磁碟代號改為[E]
 ![adddisk](http://120.114.142.50/img2/12.changecd.png)  
@@ -98,9 +98,9 @@ Formatting 'windows10-storage.img', fmt=qcow2 size=429496729600 cluster_size=655
 
 **重新檢查磁碟**  
 這時候可以發現跟我們剛剛設置的磁碟代號稍微不同，需要小心並記得個別的代號  
-C槽的代號：  C => C
-光碟機的代號：E => D
-儲存碟的代號：D => E
+C槽的代號：  C => C  
+光碟機的代號：E => D  
+儲存碟的代號：D => E  
 ![diskcheck](http://120.114.142.50/img2/28.disklist.png)
 
 #### 6. 移動使用者囉~~  
