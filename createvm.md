@@ -147,6 +147,7 @@ Formatting '/vm_data/img/windows10.img', fmt=qcow2 size=429496729600 cluster_siz
 ![setuefi](http://120.114.142.50/img/9.%e9%81%b8%e6%93%87%e6%9e%b6%e6%a7%8b%e8%b7%9fUEFI.png)  
 2. CPU使用實體核心  
 CPU的model使用host-passthrough  
+![host-passthrough](http://120.114.142.50/img/36.host-passthrough.png)  
 3. 檢查記憶體  
 ![checkmem](http://120.114.142.50/img/10.%e7%a2%ba%e8%aa%8d%e8%a8%98%e6%86%b6%e9%ab%94.png)  
 4. 調整開機順序  
@@ -157,8 +158,10 @@ CPU的model使用host-passthrough
 CD則使用SATA  
 6. 選擇網路介面  
 選擇bridge(通常預設就會是bridge了)  
+![network-interface](http://120.114.142.50/img/37.network.png)
 7. 刪除不會用到的裝置  
 除了上述設定到的裝置，其餘都可以刪除  
+![clean](http://120.114.142.50/img/38.clean.png)
 8. 增加顯示卡以及USB等PCI裝置  
 ![addcard](http://120.114.142.50/img/12.%e9%81%b8%e6%93%87%e9%a1%af%e7%a4%ba%e5%8d%a1.png)
 ![addpci](http://120.114.142.50/img/14.%e5%88%aa%e9%99%a4%e4%b8%8d%e5%bf%85%e8%a6%81%e7%9a%84%e8%a3%9d%e7%bd%ae.png)
